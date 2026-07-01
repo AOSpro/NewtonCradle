@@ -1,0 +1,55 @@
+<!--Start:🕒 2026-06-30 Tuesday 18:07:03-->
+<!--Owner:🔧 AOSpro-->
+<!--Call: 📞 t.me/aospro-->
+<!--Project: 📌 -->
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Newton's Cradle Simulation</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <!-- Loading Screen -->
+        <div id="loader">
+            <div class="spinner"></div>
+        </div>
+        <!-- UI Overlay Layer -->
+        <div id="ui-layer">
+            <h1>Newton's Cradle</h1>
+            <!-- Ball Count -->
+            <div class="control-group">
+                <label>Number of Balls: <span id="val-ballCount">5</span></label>
+                <input type="range" id="input-ballCount" min="3" max="15" step="1" value="5">
+            </div>
+            <!-- Gravity -->
+            <div class="control-group">
+                <label>Gravity: <span id="val-gravity">-9.82</span></label>
+                <input type="range" id="input-gravity" min="-30" max="-1" step="0.5" value="-9.82">
+            </div>
+            <!-- Pull Count -->
+            <div class="control-group">
+                <label>Balls to Pull: <span id="val-pullCount">1</span></label>
+                <input type="range" id="input-pullCount" min="1" max="4" step="1" value="1">
+            </div>
+            <!-- Pull Angle -->
+            <div class="control-group">
+                <label>Pull Angle: <span id="val-pullAngle">45°</span></label>
+                <input type="range" id="input-pullAngle" min="1" max="85" step="1" value="45">
+            </div>
+            <!-- Action Grid -->
+            <div class="btn-row">
+                <button id="btn-pullLeft">Pull Left</button>
+                <button id="btn-pullRight">Pull Right</button>
+            </div>
+            <button id="btn-reset" class="secondary">Reset Positions</button>
+            <div class="instruction">
+                Tip: You can also click and drag any ball with your mouse!
+            </div>
+        </div>
+        <!-- WebGL Canvas Anchor Container -->
+        <div id="canvas-container"></div>
+        <script type="module" src="./script.js"></script>
+    </body>
+</html>

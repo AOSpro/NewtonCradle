@@ -1,0 +1,28 @@
+{
+  "name": "threejs-newtons-cradle",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Newton Cradle Simulation",
+  "license": "ISC",
+  "author": "Aasm_Edrees,Adnan_Sahlool",
+  "type": "module",
+  "main": "script.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "lil-gui": "^0.20.0",
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "@eslint/css": "^1.3.0",
+    "@eslint/js": "^10.0.1",
+    "@eslint/json": "^2.0.0",
+    "@eslint/markdown": "^8.0.2",
+    "eslint": "^10.6.0",
+    "globals": "^17.7.0",
+    "vite": "^5.0.0"
+  }
+}

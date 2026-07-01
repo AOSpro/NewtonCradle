@@ -1,0 +1,19 @@
+# Start:🕒 2026-06-30 Tuesday 18:56:52
+# Owner:🔧 AOSpro
+# Call: 📞 t.me/aospro
+# Project: 📌 Newton Cradle
+
+my-newtons-cradle/
+├── package.json              # Configures dependencies (Three.js, Vite) and terminal start scripts
+├── vite.config.js            # Configures the local development server and automatic browser refreshing
+├── index.html                # Houses the WebGL container, loading screen layout, and HUD menu markup
+├── style.css                 # Applies the sleek glassmorphism themes, layouts, and spinner animations
+├── script.js                 # Links HTML inputs to internal variables; coordinates initialization & loops
+└── src/
+    ├── SceneManager.js       # Builds cameras, lighting rigs, shadows, background fog, and WebGL renderers
+    ├── PhysicsEngine.js      # Runs a 120Hz fixed loop for gravity, string lengths, and elastic collisions
+    ├── InteractionManager.js # Projects screen clicks into 3D space to let you click-and-drag balls
+    └── World/
+        ├── CradleFrame.js    # Procedurally designs the physical metal beams and supporting floor base plates
+        └── CradleBalls.js    # Spawns sphere meshes and mutates string line vertices based on physics data
+
