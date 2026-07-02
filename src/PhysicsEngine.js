@@ -1,7 +1,7 @@
 //Start:🕒 2026-06-30 Tuesday 18:07:03
 //Owner:🔧 AOSpro
 //Call: 📞 t.me/aospro
-//Project: 📌
+//Project: 📌 Newton Cradle
 export class PhysicsEngine {
     constructor() {
         this.timeStep = 1 / 120;

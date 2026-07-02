@@ -113,6 +113,9 @@ const setupHTMLUI = () => {
     document.getElementById('btn-pullRight').addEventListener('click', () => pullBalls('right'));
     document.getElementById('btn-reset').addEventListener('click', resetSimulation);
 };
+////////
+alert("Newton`s Cradle. By:\nAdnan Sahlool,\nAasm Edrees,\nAya Abo Foda,\nAlaa Qattan");
+////////
 // Initialize system pipelines
 setupHTMLUI();
 rebuildSimulation();

@@ -36,8 +36,8 @@ export class CradleBalls {
             };
             const mesh = new THREE.Mesh(sphereGeo, this.ballMaterial);
             mesh.position.set(x, y, 0);
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
+            mesh.castShadow = false;//true;
+            mesh.receiveShadow = false;//true;
             this.scene.add(mesh);
             const lineGeoFront = new THREE.BufferGeometry().setFromPoints([pivotFront, ballTopPoint]);
             const lineFront = new THREE.Line(lineGeoFront, this.lineMaterial);
@@ -66,10 +66,10 @@ export class CradleBalls {
             const attachX = b.state.x + (-nx * this.config.ballRadius);
             const attachY = b.state.y + (-ny * this.config.ballRadius);
             const fp = b.lineFront.geometry.attributes.position.array;
-            fp[3] = attachX; fp[4] = attachY; fp[5] = this.config.frameDepth / 2 - 0.5;
+            fp[3] = attachX; fp[4] = attachY; fp[5] = 0;//this.config.frameDepth / 2 - 0.5;
             b.lineFront.geometry.attributes.position.needsUpdate = true;
             const bp = b.lineBack.geometry.attributes.position.array;
-            bp[3] = attachX; bp[4] = attachY; bp[5] = -this.config.frameDepth / 2 + 0.5;
+            bp[3] = attachX; bp[4] = attachY; bp[5] = 0;//-this.config.frameDepth / 2 + 0.5;
             b.lineBack.geometry.attributes.position.needsUpdate = true;
         });
     }

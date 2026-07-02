@@ -1,7 +1,7 @@
 //Start:🕒 2026-06-30 Tuesday 18:07:03
 //Owner:🔧 AOSpro
 //Call: 📞 t.me/aospro
-//Project: 📌
+//Project: 📌 Newton Cradle
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -26,8 +26,8 @@ export class SceneManager {
     initRenderer() {
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        /*this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;*/
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.container.appendChild(this.renderer.domElement);
     }
@@ -41,15 +41,15 @@ export class SceneManager {
         this.scene.add(ambient);
         const dirLight = new THREE.DirectionalLight(0xfff5e0, 15);
         dirLight.position.set(5, 12, 10);
-        dirLight.castShadow = true;
+        /*dirLight.castShadow =true;
         dirLight.shadow.mapSize.width = 2048;
         dirLight.shadow.mapSize.height = 2048;
-        dirLight.shadow.bias = -0.001;
+        dirLight.shadow.bias = -0.001;*/
         this.scene.add(dirLight);
-        const spotLight = new THREE.SpotLight(0xff8c00, 3);
+        /*const spotLight = new THREE.SpotLight(0xff8c00, 3);
         spotLight.position.set(-10, 10, -5);
         spotLight.lookAt(0, 0, 0);
-        this.scene.add(spotLight);
+        this.scene.add(spotLight);*/
     }
     initControls() {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);

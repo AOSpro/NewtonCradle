@@ -32,14 +32,14 @@ export class CradleFrame {
         const frontTopBar = new THREE.Mesh(topBarGeo, this.metallicMat);
         frontTopBar.rotation.z = Math.PI / 2;
         frontTopBar.position.set(0, topBarY, frameDepth / 2 - 0.5);
-        frontTopBar.castShadow = true;
-        frontTopBar.receiveShadow = true;
+        frontTopBar.castShadow = false;//true;
+        frontTopBar.receiveShadow = false;//true;
         this.group.add(frontTopBar);
         const backTopBar = new THREE.Mesh(topBarGeo, this.metallicMat);
         backTopBar.rotation.z = Math.PI / 2;
         backTopBar.position.set(0, topBarY, -frameDepth / 2 + 0.5);
-        backTopBar.castShadow = true;
-        backTopBar.receiveShadow = true;
+        backTopBar.castShadow = false;//true;
+        backTopBar.receiveShadow = false;//true;
         this.group.add(backTopBar);
         const poleGeo = new THREE.CylinderGeometry(0.2, 0.2, frameHeight, 16);
         const polePositions = [
@@ -51,15 +51,15 @@ export class CradleFrame {
         polePositions.forEach(pos => {
             const pole = new THREE.Mesh(poleGeo, this.metallicMat);
             pole.position.set(pos.x, 0, pos.z);
-            pole.castShadow = true;
-            pole.receiveShadow = true;
+            pole.castShadow = false;// true;
+            pole.receiveShadow = false;// true;
             this.group.add(pole);
         });
         const baseGeometry = new THREE.BoxGeometry(frameWidth + 1, 0.4, frameDepth + 1);
         const base = new THREE.Mesh(baseGeometry, this.baseMat);
         base.position.y = baseY;
-        base.castShadow = true;
-        base.receiveShadow = true;
+        base.castShadow = false;// true;
+        base.receiveShadow = false;// true;
         this.group.add(base);
     }
     destroy() {

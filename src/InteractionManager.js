@@ -1,7 +1,7 @@
 //Start:🕒 2026-06-30 Tuesday 18:07:03
 //Owner:🔧 AOSpro
 //Call: 📞 t.me/aospro
-//Project: 📌
+//Project: 📌 Newton Cradle
 import * as THREE from 'three';
 export class InteractionManager {
     constructor(sceneManager, config) {
