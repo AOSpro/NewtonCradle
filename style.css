@@ -1,70 +1,67 @@
-/*Start:🕒 2026-06-30 Tuesday 18:07:03*/
-/*Owner:🔧 AOSpro*/
-/*Call: 📞 t.me/aospro*/
-/*Project: 📌 Newton Cradle*/
 :root {
     --primary-color: #00d2ff;
     --bg-color: #1a1a1a;
     --panel-bg: rgba(255, 255, 255, 0.1);
     --text-color: #ffffff;
 }
+
 body {
     margin: 0;
     overflow: hidden;
     background-color: var(--bg-color);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: var(--text-color);
-    user-select: none;
 }
+
 #canvas-container {
     width: 100vw;
     height: 100vh;
     display: block;
 }
+
 #ui-layer {
     position: absolute;
     top: 20px;
     left: 20px;
     background: var(--panel-bg);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     padding: 20px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    width: 280px;
+    max-width: 300px;
     pointer-events: auto;
     z-index: 10;
 }
+
 h1 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin: 0 0 15px 0;
     text-transform: uppercase;
     letter-spacing: 1px;
     border-bottom: 2px solid var(--primary-color);
     padding-bottom: 8px;
-    display: block;
+    display: inline-block;
 }
+
 .control-group {
     margin-bottom: 15px;
 }
+
 label {
     display: flex;
     justify-content: space-between;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     margin-bottom: 5px;
     color: #ddd;
 }
+
 input[type="range"] {
     width: 100%;
     cursor: pointer;
     accent-color: var(--primary-color);
 }
-.btn-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 10px;
-}
+
 button {
     background: linear-gradient(135deg, var(--primary-color), #0078ff);
     color: white;
@@ -76,41 +73,39 @@ button {
     width: 100%;
     transition: transform 0.1s, opacity 0.2s;
     text-transform: uppercase;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
 }
+
 button:hover {
     opacity: 0.9;
 }
+
 button:active {
     transform: scale(0.98);
 }
-button.secondary {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-button.secondary:hover {
-    background: rgba(255, 255, 255, 0.25);
-}
+
 .instruction {
     margin-top: 15px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: #aaa;
     font-style: italic;
     text-align: center;
 }
+
 #loader {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: #0d1b2a;
+    background: #000;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 999;
     transition: opacity 0.5s ease;
 }
+
 .spinner {
     width: 40px;
     height: 40px;
@@ -119,7 +114,10 @@ button.secondary:hover {
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+

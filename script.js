@@ -1,129 +1,171 @@
-//Start:🕒 2026-06-30 Tuesday 18:07:03
-//Owner:🔧 AOSpro
-//Call: 📞 t.me/aospro
 //Project: 📌 Newton Cradle
-import { SceneManager } from './src/SceneManager.js';
-import { CradleFrame } from './src/World/CradleFrame.js';
-import { CradleBalls } from './src/World/CradleBalls.js';
-import { PhysicsEngine } from './src/PhysicsEngine.js';
-import { InteractionManager } from './src/InteractionManager.js';
-// Global variables matching configuration state targets
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+
+//import { FontLoader } from 'three/examples/jsm/Addons.js'
+//import { TextGeometry } from 'three/examples/jsm/Addons.js'
+
+import {createFrame} from './src/frame.js';
+import {createBallsAndStrings} from './src/objects.js';
+import {createGUI} from './src/gui.js';
+import {updatePhysics,pullBalls} from './src/move.js';
+import {Controls, controls} from './src/control.js';
+import {resetSimulation,rebuildSimulation} from './src/simulation.js';
+
 export const CONFIG = {
     ballCount: 5,
     ballRadius: 1,
-    stringLength: 6,
-    spacing: 2,
     ballMass: 5,
-    frameWidth: 26,
+    spacing: 2,
+
+    stringLength: 6,
+
     frameHeight: 8,
+    frameWidth: 12,
     frameDepth: 4
 };
-let currentPullCount = 1;
-let currentPullAngle = 45;
-const sceneManager = new SceneManager();
-const physics = new PhysicsEngine();
-const interactions = new InteractionManager(sceneManager, CONFIG);
-let currentFrame = null;
-let currentBalls = null;
-// Core Functional Pipeline Methods
-const rebuildSimulation = () => {
-    if (currentFrame) currentFrame.destroy();
-    if (currentBalls) currentBalls.destroy();
-    // Clamp your runtime interface settings boundaries
-    const pullCountInput = document.getElementById('input-count');
-    currentPullCount = Math.min(currentPullCount, CONFIG.ballCount - 1);
-    const inputPullCount = document.getElementById('input-pullCount');
-    if (inputPullCount) {
-        inputPullCount.max = CONFIG.ballCount - 1;
-        if (parseInt(inputPullCount.value) > CONFIG.ballCount - 1) {
-            inputPullCount.value = CONFIG.ballCount - 1;
-            document.getElementById('val-pullCount').innerText = inputPullCount.value;
-            currentPullCount = CONFIG.ballCount - 1;
-        }
+export let Balls = [];
+
+export let scene,camera,renderer;
+
+export let pullCount = 1;
+export let pullAngle = 60;
+export let gravity = -9.82;
+
+
+export let timeStep = 1 / 60;
+export let lastTime = performance.now();
+export let accumulator = 0;
+
+export let updatePhysicsIsCalled = false;
+
+export function set(x,val){
+    switch(x){
+        case "pc":
+            pullCount=val;
+            break;
+        case "ac":
+            pullAngle=val;
+            break;
+        case "g":
+            gravity=val;
+            break;
+        case "b":
+            Balls=val;
+            break;
     }
-    currentFrame = new CradleFrame(sceneManager.scene, CONFIG);
-    currentBalls = new CradleBalls(sceneManager.scene, CONFIG);
-    physics.resetBalls(currentBalls.instances);
-    interactions.setTargetBalls(currentBalls.instances);
-};
-const resetSimulation = () => {
-    if (!currentBalls) return;
-    const totalWidth = (CONFIG.ballCount - 1) * CONFIG.spacing;
-    const startX = -totalWidth / 2;
-    currentBalls.instances.forEach((b, index) => {
-        const s = b.state;
-        s.x = startX + index * CONFIG.spacing;
-        s.y = CONFIG.frameHeight / 2 - CONFIG.stringLength;
-        s.vx = 0;
-        s.vy = 0;
+}
+
+function init() {
+
+    const container = document.getElementById('canvas-container');
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0d1b2a);
+
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1);
+    camera.position.set(0, 5, 18);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    container.appendChild(renderer.domElement);
+
+
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmremGenerator.fromScene(
+        new RoomEnvironment(),
+        0.04
+    ).texture;
+    scene.environmentIntensity = 0.5;
+
+    createFrame(scene);
+    createBallsAndStrings(scene);
+    Controls();
+
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
     });
-};
-const pullBalls = (direction) => {
-    if (!currentBalls) return;
-    const instances = currentBalls.instances;
-    const maxAngle = (Math.PI * currentPullAngle) / 180;
-    if (direction === 'left') {
-        for (let i = 0; i < currentPullCount && i < instances.length; i++) {
-            const angle = -maxAngle;
-            const s = instances[i].state;
-            s.x = s.pivotX + CONFIG.stringLength * Math.sin(angle);
-            s.y = s.pivotY - CONFIG.stringLength * Math.cos(angle);
-            s.vx = 0; s.vy = 0;
-        }
-    } else if (direction === 'right') {
-        for (let i = 0; i < currentPullCount && i < instances.length; i++) {
-            const idx = instances.length - 1 - i;
-            const angle = maxAngle;
-            const s = instances[idx].state;
-            s.x = s.pivotX + CONFIG.stringLength * Math.sin(angle);
-            s.y = s.pivotY - CONFIG.stringLength * Math.cos(angle);
-            s.vx = 0; s.vy = 0;
-        }
+
+    document.getElementById('loader').style.opacity = 0;
+    setTimeout(() => document.getElementById('loader').remove(), 500);
+    animate();
+}
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    const currentTime = performance.now();
+    let frameTime = (currentTime - lastTime) / 1000;
+    lastTime = currentTime;
+
+    if (frameTime > 0.1) {
+        //console.log(true);
+        frameTime = 0.1;
     }
-};
-// --- BIND CUSTOM HTML INTERFACE INPUT ACTIONS ---
-const setupHTMLUI = () => {
-    // 1. Ball Count Slider
-    const elBallCount = document.getElementById('input-ballCount');
-    elBallCount.addEventListener('input', (e) => {
-        CONFIG.ballCount = parseInt(e.target.value);
-        document.getElementById('val-ballCount').innerText = CONFIG.ballCount;
-        rebuildSimulation();
-    });
-    // 2. Gravity Slider
-    const elGravity = document.getElementById('input-gravity');
-    elGravity.addEventListener('input', (e) => {
-        physics.gravity = parseFloat(e.target.value);
-        document.getElementById('val-gravity').innerText = physics.gravity.toFixed(2);
-    });
-    // 3. Pull Ball Multiplier Slider
-    const elPullCount = document.getElementById('input-pullCount');
-    elPullCount.addEventListener('input', (e) => {
-        currentPullCount = parseInt(e.target.value);
-        document.getElementById('val-pullCount').innerText = currentPullCount;
-    });
-    // 4. Pull Angle Degree Slider
-    const elPullAngle = document.getElementById('input-pullAngle');
-    elPullAngle.addEventListener('input', (e) => {
-        currentPullAngle = parseInt(e.target.value);
-        document.getElementById('val-pullAngle').innerText = currentPullAngle + "°";
-    });
-    // 5. Trigger Buttons Buttons
-    document.getElementById('btn-pullLeft').addEventListener('click', () => pullBalls('left'));
-    document.getElementById('btn-pullRight').addEventListener('click', () => pullBalls('right'));
-    document.getElementById('btn-reset').addEventListener('click', resetSimulation);
-};
-////////
-alert("Newton`s Cradle. By:\nAdnan Sahlool,\nAasm Edrees,\nAya Abo Foda,\nAlaa Qattan");
-////////
-// Initialize system pipelines
-setupHTMLUI();
-rebuildSimulation();
-// Dynamic Frame Rendering Loops
-const tick = (currentTime) => {
-    physics.update(currentTime);
-    if (currentBalls) currentBalls.update();
-    sceneManager.render();
-    window.requestAnimationFrame(tick);
-};
-window.requestAnimationFrame(tick);
+
+    //console.log(frameTime);
+
+    accumulator += frameTime;
+
+    while (accumulator >= timeStep) {
+
+        updatePhysics(frameTime);
+        accumulator -= timeStep;
+        updatePhysicsIsCalled = true;
+    }
+
+    if (updatePhysicsIsCalled){
+
+        Balls.forEach(Ball => {
+
+            Ball.ballMesh.position.set(Ball.state.x, Ball.state.y, 0);
+
+            const dx = Ball.state.x - Ball.state.oldBallCenterPosition_X;
+            const dy = Ball.state.y - Ball.state.topPivot_Y;
+            const dz = 0;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const nx = dx / dist;
+            const ny = dy / dist;
+            const nz = 0;
+
+            const upVector = new THREE.Vector3(-nx, -ny, -nz);
+            const quaternion = new THREE.Quaternion();
+            quaternion.setFromUnitVectors(
+                new THREE.Vector3(0, 1, 0),
+                upVector
+            );
+            Ball.ballMesh.setRotationFromQuaternion(quaternion);
+
+            // Calculate attachment point on ball surface
+            const attachX = Ball.state.x + (-nx * CONFIG.ballRadius);
+            const attachY = Ball.state.y + (-ny * CONFIG.ballRadius);
+            const attachZ = 0 + (-nz * CONFIG.ballRadius);
+
+
+            const fp = Ball.frontString.geometry.attributes.position.array;
+            fp[3] = attachX;
+            fp[4] = attachY;
+            fp[5] = attachZ;
+            Ball.frontString.geometry.attributes.position.needsUpdate = true;
+
+            const bp = Ball.backString.geometry.attributes.position.array;
+            bp[3] = attachX;
+            bp[4] = attachY;
+            bp[5] = attachZ;
+            Ball.backString.geometry.attributes.position.needsUpdate = true;
+        });
+    }
+
+    updatePhysicsIsCalled = false;
+
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+init();
